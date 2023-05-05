@@ -15,12 +15,9 @@ sub anime_list{
 # show arrayList
 sub get_animes{
     print("\nAnimes: \n\n");
-    $count=0;
     foreach $name_of_anime (@name_list){
-        $count+=1;
-        print("$count. $name_of_anime"); 
+        print("$name_of_anime\n"); 
     }
-    print("\n");
 }
 
 
@@ -40,9 +37,21 @@ sub adding_new_anime{
 sub deleting_anime{
     print("\nEnter anime name: \n");
     $anime_name=<STDIN>;
-    $filename='animelist.txt';
-    $lookup_value=`grep -i $anime_name $filename`;
-    print("\n$lookup_value\n");
+    chomp($anime_name);
+    my $index_to_delete = -1;
+    for my $i (0..$#name_list) {
+        if (lc($name_list[$i]) eq lc($anime_name)) {
+            $index_to_delete = $i;
+            last;
+        }
+    }
+
+    # Delete the string from the array
+    if ($index_to_delete >= 0) {
+        splice @name_list, $index_to_delete, 1;
+    }
+    `grep -iv "$anime_name" ./animelist.txt > tmp-file && mv tmp-file ./animelist.txt`;
+    print("\n$anime_name is deleted\n");
 }
 
 
@@ -65,6 +74,7 @@ sub search_for_anime{
 sub menu_options{
 
     #displaying user options
+    print("\n ------ Anime Repo -------\n");
     print("\n1. Search for anime\n");
     print("\n2. Add an anime\n");
     print("\n3. Get all the list of animes\n");
